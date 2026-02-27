@@ -108,7 +108,7 @@ const Home = () => {
       </section>
       {/* SLIDER END */}
       {/* OFFER CARD START */}
-      <section className="container mx-auto max-md:w-full w-[80%] lg:max-w-7xl space-y-6 px-4">
+      <section className="container mx-auto max-md:w-full w-[80%] lg:max-w-7xl space-y-6 px-4 overflow-hidden">
         {/* Header with improved styling */}
         <div className="text-center md:text-left">
           <h2 className="text-2xl md:text-3xl font-light tracking-tight text-gray-900">
@@ -192,7 +192,7 @@ const Home = () => {
       </section>
       {/* OFFER CARD END */}
       {/* COUPON CARD START */}
-      <section className="container mx-auto max-md:w-full w-[80%] lg:max-w-7xl space-y-6 px-4">
+      <section className="container mx-auto max-md:w-full w-[80%] lg:max-w-7xl space-y-6 px-4 overflow-hidden">
         {/* Header with improved styling */}
         <div className="text-center md:text-left">
           <h2 className="text-2xl md:text-3xl font-light tracking-tight text-gray-900">
