@@ -34,7 +34,7 @@ export const game_data = [
   {
     id: 3,
     title: "DOOM Eternal",
-    logo: "doom.jpg",
+    logo: "/doom.jpg",
     thumbnail: "/doom_thumbnail.jpg",
     description:
       "Fast-paced FPS shooter with premium currency for cosmetics and battle passes",
@@ -67,7 +67,7 @@ export const game_data = [
     id: 5,
     title: "Red Dead Redemption 2",
     logo: "/rdr2.jpeg",
-    thumbnail: "public/rdr2_thumbnail.jpg",
+    thumbnail: "/rdr2_thumbnail.jpg",
     description:
       "Epic Western adventure with Gold Bars for online mode purchases and cosmetics",
     category: "Action-Adventure",
@@ -83,7 +83,7 @@ export const game_data = [
     id: 6,
     title: "Rainbow Six Siege",
     logo: "/r6siege.jpg",
-    thumbnail: "public/r6siege_thumbnail.webp",
+    thumbnail: "/r6siege_thumbnail.webp",
     description:
       "Tactical FPS with R6 Credits for operators, skins, and battle passes",
     category: "FPS",

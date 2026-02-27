@@ -10,6 +10,7 @@ export default function SwiperScroll({
   const scrollContainerRef = useRef(null);
   const containerRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
   const [maxTranslate, setMaxTranslate] = useState(0);
@@ -20,6 +21,8 @@ export default function SwiperScroll({
   const velocityRef = useRef(0);
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
+  const startTimeRef = useRef(0);
+  const moveDistanceRef = useRef(0);
 
   // Convert children to array
   const childArray = React.Children.toArray(children);
@@ -120,16 +123,18 @@ export default function SwiperScroll({
         animationRef.current = requestAnimationFrame(animate);
       } else {
         animationRef.current = null;
+        setIsScrolling(false);
       }
     };
 
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
     }
+    setIsScrolling(true);
     animationRef.current = requestAnimationFrame(animate);
   };
 
-  const handleMouseDown = (e) => {
+  const handleDragStart = (clientX) => {
     // Cancel any ongoing animation
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
@@ -137,30 +142,35 @@ export default function SwiperScroll({
     }
 
     setIsDragging(true);
-    setStartX(e.pageX - translateX);
-    dragStartRef.current = e.pageX;
-    lastXRef.current = e.pageX;
+    setIsScrolling(false);
+    setStartX(clientX - translateX);
+    dragStartRef.current = clientX;
+    lastXRef.current = clientX;
     lastTimeRef.current = Date.now();
+    startTimeRef.current = Date.now();
+    moveDistanceRef.current = 0;
     velocityRef.current = 0;
   };
 
-  const handleMouseMove = (e) => {
+  const handleDragMove = (clientX) => {
     if (!isDragging) return;
-    e.preventDefault();
 
     const currentTime = Date.now();
     const deltaTime = currentTime - lastTimeRef.current;
-    const deltaX = e.pageX - lastXRef.current;
+    const deltaX = clientX - lastXRef.current;
+
+    // Calculate total move distance
+    moveDistanceRef.current += Math.abs(deltaX);
 
     // Calculate velocity (pixels per millisecond)
     if (deltaTime > 0) {
       velocityRef.current = deltaX / deltaTime;
     }
 
-    lastXRef.current = e.pageX;
+    lastXRef.current = clientX;
     lastTimeRef.current = currentTime;
 
-    const currentX = e.pageX - startX;
+    const currentX = clientX - startX;
 
     // Boundary checks with resistance
     let newTranslate = currentX;
@@ -178,38 +188,78 @@ export default function SwiperScroll({
     }
   };
 
-  const handleMouseUp = () => {
+  const handleDragEnd = (e) => {
+    if (!isDragging) return;
+
+    const dragTime = Date.now() - startTimeRef.current;
+    const isQuickTap = dragTime < 200 && moveDistanceRef.current < 10;
+
     setIsDragging(false);
 
-    // Find nearest snap point based on current position and velocity
-    const snapTarget = findNearestSnapPoint(translateX, velocityRef.current);
+    // If it was a quick tap, don't snap - allow click to pass through
+    if (!isQuickTap) {
+      // Find nearest snap point based on current position and velocity
+      const snapTarget = findNearestSnapPoint(translateX, velocityRef.current);
+      // Animate to snap point
+      animateToPosition(snapTarget);
+    } else {
+      // Reset transform to current position without animation
+      setTranslateX(translateX);
+      setIsScrolling(false);
+    }
+  };
 
-    // Animate to snap point
-    animateToPosition(snapTarget);
+  // Mouse events
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    handleDragStart(e.pageX);
+  };
+
+  const handleMouseMove = (e) => {
+    e.preventDefault();
+    handleDragMove(e.pageX);
+  };
+
+  const handleMouseUp = (e) => {
+    handleDragEnd(e);
   };
 
   const handleMouseLeave = () => {
     if (isDragging) {
-      handleMouseUp();
+      handleDragEnd();
     }
   };
 
-  // Add touch support for mobile
+  // Touch events for mobile
   const handleTouchStart = (e) => {
     const touch = e.touches[0];
-    handleMouseDown({ pageX: touch.pageX });
+    handleDragStart(touch.pageX);
   };
 
   const handleTouchMove = (e) => {
+    e.preventDefault(); // Prevent page scroll
     const touch = e.touches[0];
-    handleMouseMove({
-      pageX: touch.pageX,
-      preventDefault: () => e.preventDefault(),
-    });
+    handleDragMove(touch.pageX);
   };
 
-  const handleTouchEnd = () => {
-    handleMouseUp();
+  const handleTouchEnd = (e) => {
+    handleDragEnd(e);
+  };
+
+  const handleTouchCancel = (e) => {
+    handleDragEnd(e);
+  };
+
+  // Handle click on child elements
+  const handleChildClick = (e, child) => {
+    // If we were scrolling, prevent the click
+    if (isScrolling || moveDistanceRef.current > 10) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+    // Otherwise, let the click through
+    return true;
   };
 
   // Cleanup animation on unmount
@@ -233,6 +283,7 @@ export default function SwiperScroll({
               cursor: isDragging ? "grabbing" : "grab",
               transform: `translateX(${translateX}px)`,
               transition: isDragging ? "none" : "transform 0.3s ease-out",
+              touchAction: "pan-y", // Allow vertical scrolling, handle horizontal manually
             }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -241,18 +292,52 @@ export default function SwiperScroll({
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchCancel}
           >
             {childArray.map((child, index) => (
               <div
                 key={index}
                 className={itemClassName}
-                style={{ pointerEvents: isDragging ? "none" : "auto" }}
+                style={{
+                  pointerEvents: isDragging ? "none" : "auto",
+                }}
+                onClick={(e) => {
+                  // Allow click if not dragging/scrolling
+                  if (isScrolling || moveDistanceRef.current > 10) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }
+                }}
               >
                 {child}
               </div>
             ))}
           </div>
         </div>
+
+        {/* Optional: Add scroll indicators or hint */}
+        {maxTranslate < 0 && (
+          <div className="flex justify-center mt-4 gap-1">
+            <div
+              className={`w-1 h-1 rounded-full transition-all ${
+                translateX > maxTranslate * 0.2 ? "bg-gray-400" : "bg-gray-300"
+              }`}
+            />
+            <div
+              className={`w-1 h-1 rounded-full transition-all ${
+                translateX <= maxTranslate * 0.2 &&
+                translateX > maxTranslate * 0.8
+                  ? "bg-gray-400"
+                  : "bg-gray-300"
+              }`}
+            />
+            <div
+              className={`w-1 h-1 rounded-full transition-all ${
+                translateX <= maxTranslate * 0.8 ? "bg-gray-400" : "bg-gray-300"
+              }`}
+            />
+          </div>
+        )}
       </div>
 
       {/* Desktop view - static flex with wrapping */}

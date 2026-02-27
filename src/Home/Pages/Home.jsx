@@ -24,7 +24,7 @@ const Home = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeColor, setActiveColor] = useState("#f9fafb"); // Default bg color
+  const [activeColor, setActiveColor] = useState("#f9fafb");
   const [showAll, setShowAll] = useState(false);
 
   // Load mock data
@@ -96,15 +96,18 @@ const Home = () => {
       {/* SLIDER START */}
       <section className="container mx-auto max-md:w-full w-[80%] lg:max-w-7xl px-4 pt-5">
         {/* IMPORTANT!! NO MORE THAN 10 DATA, IF MORE THAN 10 THE PAGINATION WILL OVERFLOW BECAUSE OF MANY NO SPACE */}
-        <Slider
-          images={data}
-          slidesPerView={1}
-          spaceBetween={20}
-          autoplayDelay={5000}
-          onSlideChange={handleSlideChange}
-        />
+        <NavLink to={"/game/detail"}>
+          <Slider
+            images={data}
+            slidesPerView={1}
+            spaceBetween={20}
+            autoplayDelay={5000}
+            onSlideChange={handleSlideChange}
+          />
+        </NavLink>
       </section>
-      {/* SLIDER END */} {/* OFFER CARD START */}
+      {/* SLIDER END */}
+      {/* OFFER CARD START */}
       <section className="container mx-auto max-md:w-full w-[80%] lg:max-w-7xl space-y-6 px-4">
         {/* Header with improved styling */}
         <div className="text-center md:text-left">
@@ -117,11 +120,10 @@ const Home = () => {
           </p>
         </div>
 
-        {/* Slider component - shows appropriate items based on screen size */}
         <SwiperScroll gridRows={2}>
           {/* added slice to show 20 for development: remove later */}
-          {displayedItems.slice(0, 20).map((item, idx) => (
-            <NavLink to={"/game/detail"} key={item.id || idx}>
+          {displayedItems.slice(0, 20).map((item) => (
+            <NavLink to={"/game/detail"} key={item.id}>
               <OfferCard
                 title={item.title}
                 thumbnail={item.thumbnail}
