@@ -1,0 +1,28 @@
+.swiper {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding: 20px 0;
+}
+
+.swiper-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.swiper-slide {
+  display: flex;
+  flex-shrink: 0;
+  opacity: 1 !important;
+  height: auto;
+}
+
+/* Grid specific styles */
+.swiper-grid {
+  margin-top: 20px;
+}
+
+.swiper-grid-column>.swiper-wrapper {
+  flex-wrap: wrap;
+  flex-direction: row;
+}

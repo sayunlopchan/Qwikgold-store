@@ -1,0 +1,137 @@
+.swiper {
+  height: 360px;
+  width: 100%;
+  border-radius: 10px;
+  overflow: visible;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+}
+
+.swiper-slide {
+  border-radius: 10px;
+  opacity: 0.5;
+}
+
+.swiper-slide-active {
+  opacity: 1;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: white;
+  height: 30px;
+  width: 30px;
+  background-color: red;
+  border-radius: 50%;
+  padding: 8px;
+  transition: all 0.2s ease-in-out;
+  /* Smooth transition for all changes */
+  cursor: pointer;
+  /* Ensures pointer cursor */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  /* Subtle shadow for depth */
+}
+
+/* Hover effect - makes button more prominent */
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  background-color: #ff3333;
+  /* Lighter red on hover */
+  transform: scale(1.1);
+  /* Slightly larger on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  /* Deeper shadow on hover */
+}
+
+/* Active/Click effect */
+.swiper-button-prev:active,
+.swiper-button-next:active {
+  transform: scale(0.95);
+  /* Slightly smaller when clicked */
+  background-color: #cc0000;
+  /* Darker red when clicked */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  /* Smaller shadow when clicked */
+}
+
+/* Pagination Container */
+.swiper-pagination {
+  position: absolute;
+  bottom: 10px !important;
+  left: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  gap: 4px !important;
+  padding: 5px 10px !important;
+  scrollbar-width: none;
+  /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none;
+  /* Hide scrollbar for IE/Edge */
+}
+
+/* Hide scrollbar for Chrome/Safari */
+.swiper-pagination::-webkit-scrollbar {
+  display: none;
+}
+
+/* Pagination bullets container - important for preventing stacking */
+.swiper-pagination-bullets {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 4px !important;
+  min-width: min-content !important;
+}
+
+.swiper-pagination-bullet {
+  width: 30px;
+  height: 5px;
+  background: gray;
+  opacity: 0.6;
+  border-radius: 5px;
+  margin: 0 2px !important;
+  /* Reduced margin to prevent overflow */
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  /* Prevent bullets from shrinking */
+}
+
+.swiper-pagination-bullet-active {
+  width: 100px;
+  background: #cc0000;
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .swiper-pagination-bullet {
+    width: 20px;
+  }
+
+  .swiper-pagination-bullet-active {
+    width: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .swiper-pagination-bullet {
+    width: 15px;
+  }
+
+  .swiper-pagination-bullet-active {
+    width: 40px;
+  }
+}
