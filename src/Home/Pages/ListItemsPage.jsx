@@ -355,7 +355,7 @@ const ListItemsPage = () => {
                         onClick={() => handlePlatformSelect(platform.apiValue)}
                         className={`w-full flex items-center justify-between p-3 rounded-lg transition-all duration-200 ${
                           selectedPlatform === platform.apiValue
-                            ? `bg-gradient-to-r ${platform.color} text-white`
+                            ? `bg-linear-to-r ${platform.color} text-white`
                             : "hover:bg-gray-100 text-gray-700"
                         }`}
                       >

@@ -24,7 +24,10 @@ const Home = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeColor, setActiveColor] = useState("#f9fafb");
+  const [activeColors, setActiveColors] = useState({
+    primary: "#f9fafb",
+    secondary: "#f9fafb",
+  });
   const [showAll, setShowAll] = useState(false);
 
   // Load mock data
@@ -49,9 +52,12 @@ const Home = () => {
     // Get the current game based on index
     const currentGame = data[realIndex];
 
-    // Update background color based on game's primary color
-    if (currentGame?.color_theme?.primary) {
-      setActiveColor(currentGame.color_theme.primary);
+    // Update both colors based on game's color theme
+    if (currentGame?.color_theme) {
+      setActiveColors({
+        primary: currentGame.color_theme.primary || "#f9fafb",
+        secondary: currentGame.color_theme.secondary || "#f9fafb",
+      });
     }
   };
 
@@ -77,26 +83,32 @@ const Home = () => {
 
   const displayedItems = getDisplayedItems();
   const hasMoreItems = data.length > 8;
-  if (loading) return <h2>Loading...</h2>;
+
+  if (loading)
+    return (
+      <div className="text-center py-8 h-screen">
+        <div className="animate-spin w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full mx-auto"></div>
+        <p className="text-sm text-gray-500 mt-3">Loading platforms...</p>
+      </div>
+    );
   if (error) return <h2>{error}</h2>;
 
   return (
     <div
-      className="space-y-16 md:space-y-20 lg:space-y-24 transition-colors duration-700 ease-in-out"
+      className="space-y-10 lg:space-y-20 transition-colors duration-700 ease-in-out"
       style={{
-        background: `linear-gradient(180deg, 
-      ${activeColor}50 0%, 
-      ${activeColor}25 25%, 
-      ${activeColor}08 40%, 
-      ${activeColor}03 60%, 
-      ${activeColor}20 100%
-    )`,
+        background: `linear-gradient(135deg, 
+          ${activeColors.primary}80 0%, 
+          ${activeColors.primary}40 25%, 
+          ${activeColors.secondary}40 75%, 
+          ${activeColors.secondary}80 100%
+        )`,
       }}
     >
       {/* SLIDER START */}
-      <section className="container mx-auto max-md:w-full w-[80%] lg:max-w-7xl px-4 pt-5">
+      <section className="container mx-auto max-md:w-full w-[80%] lg:max-w-7xl px-4">
         {/* IMPORTANT!! NO MORE THAN 10 DATA, IF MORE THAN 10 THE PAGINATION WILL OVERFLOW BECAUSE OF MANY NO SPACE */}
-        <NavLink to={"/game/detail"}>
+        <div className="h-65 md:h-72 lg:h-116 ">
           <Slider
             images={data}
             slidesPerView={1}
@@ -104,7 +116,7 @@ const Home = () => {
             autoplayDelay={5000}
             onSlideChange={handleSlideChange}
           />
-        </NavLink>
+        </div>
       </section>
       {/* SLIDER END */}
       {/* OFFER CARD START */}

@@ -1,7 +1,6 @@
 import React from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
-
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
@@ -17,10 +16,14 @@ const Slider = ({
   slidesPerView = 1,
   spaceBetween = 20,
   autoplayDelay = 5000,
-  onSlideChange, // Add this prop
+  onSlideChange,
 }) => {
   if (!images || images.length === 0) {
-    return "hello";
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
+        <p className="text-gray-500">No images to display</p>
+      </div>
+    );
   }
 
   // Handle slide change
@@ -32,7 +35,7 @@ const Slider = ({
 
   return (
     <Swiper
-      className="max-sm:max-h-56 max-md:w-full w-[75%] lg:max-w-7xl"
+      style={{ height: "100%", width: "100%" }}
       slidesPerView={slidesPerView}
       spaceBetween={spaceBetween}
       loop={images.length > 1}
@@ -43,20 +46,8 @@ const Slider = ({
         delay: autoplayDelay,
         disableOnInteraction: false,
       }}
-      onSlideChange={handleSlideChange} // Add this
-      onAutoplay={handleSlideChange} // Also trigger on autoplay
-      breakpoints={{
-        // Responsive breakpoints
-        640: {
-          slidesPerView: Math.min(slidesPerView, 2),
-        },
-        768: {
-          slidesPerView: Math.min(slidesPerView, 3),
-        },
-        1024: {
-          slidesPerView: slidesPerView,
-        },
-      }}
+      onSlideChange={handleSlideChange}
+      onAutoplay={handleSlideChange}
     >
       {images.slice(0, 10).map((img, idx) => (
         <SwiperSlide key={img.id || idx}>

@@ -1,11 +1,10 @@
 .swiper {
-  height: 360px;
   width: 100%;
+  height: 100%;
   border-radius: 10px;
-  overflow: visible;
+  overflow: hidden;
   margin-left: auto;
   margin-right: auto;
-  overflow: hidden;
 }
 
 .swiper-slide {
@@ -62,10 +61,19 @@
   /* Smaller shadow when clicked */
 }
 
+/* Hide navigation buttons on screens smaller than 768px */
+@media (max-width: 767px) {
+
+  .swiper-button-prev,
+  .swiper-button-next {
+    display: none !important;
+  }
+}
+
 /* Pagination Container */
 .swiper-pagination {
   position: absolute;
-  bottom: 10px !important;
+  bottom: 20px !important;
   left: 0 !important;
   width: 100% !important;
   display: flex !important;
@@ -115,7 +123,7 @@
   opacity: 1;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for pagination */
 @media (max-width: 768px) {
   .swiper-pagination-bullet {
     width: 20px;
@@ -134,4 +142,5 @@
   .swiper-pagination-bullet-active {
     width: 40px;
   }
+
 }
